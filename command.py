@@ -203,7 +203,7 @@ async def ordpack(bot, msg, ds=None):
     with open(os.path.join(path, f'{msg.chat.id}.mark'), 'w', encoding='utf=8')as op:
         op.write(df.to_markdown()) """
 
-    with open(os.path.join(path, f'{msg.chat.id}.tab'), 'w', encoding='utf=8')as op:
+    with open(os.path.join(path, f'{msg.chat.id}.tab'), 'w')as op:
         op.write(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
     # ОТПРАВЛЕНИЕ ЗАКАЗА
