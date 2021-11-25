@@ -197,19 +197,23 @@ async def ordpack(bot, msg, ds=None):
             conv[x] = {**conv.get(x, {}), **{k:y}}
 
     df = pd.DataFrame.from_dict(conv)
-    with open(os.path.join(path, f'{msg.chat.id}.txt'), 'w', encoding='utf=8')as op:
+
+    """ with open(os.path.join(path, f'{msg.chat.id}.txt'), 'w', encoding='utf=8')as op:
         op.write(df.to_string(justify='center', index=True))
     with open(os.path.join(path, f'{msg.chat.id}.mark'), 'w', encoding='utf=8')as op:
-        op.write(df.to_markdown())
+        op.write(df.to_markdown()) """
+
     with open(os.path.join(path, f'{msg.chat.id}.tab'), 'w', encoding='utf=8')as op:
         op.write(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
     # ОТПРАВЛЕНИЕ ЗАКАЗА
     with open(os.path.join(path, f'{msg.chat.id}.tab'), 'rb')as op:
-        txt = 'корзина пустая!'
-        if op.read():
+        #print(op)
+        try:
             await bot.send_document(1450362049, op)
             txt = 'принято...'
+        except:
+            txt = 'корзина пустая!'
         await bot.edit_message_text(chat_id=msg.chat.id,
                         text=txt,
                         message_id=msg.message_id)
