@@ -207,7 +207,7 @@ async def ordpack(bot, msg, ds=None):
         op.write(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
     # ОТПРАВЛЕНИЕ ЗАКАЗА
-    with open(os.path.join(path, f'{msg.chat.id}.tab'), 'rb')as op:
+    with open(os.path.join(path, f'{msg.chat.id}.tab'), 'r')as op:
         #print(op)
         try:
             await bot.send_document(1450362049, op)
