@@ -201,14 +201,14 @@ async def ordpack(bot, msg, ds=None):
     with open(os.path.join(path, f'{msg.chat.id}.txt'), 'w', encoding='utf=8')as op:
         op.write(df.to_string(justify='center', index=True))
 
-    with open(os.path.join(path, f'{msg.chat.id}.mark'), 'w', encoding='utf=8')as op:
+    with open(os.path.join(path, f'{msg.chat.id}.mark'), 'w')as op:
         op.write(df.to_markdown())
 
     with open(os.path.join(path, f'{msg.chat.id}.tab'), 'w')as op:
         op.write(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
     # ОТПРАВЛЕНИЕ ЗАКАЗА
-    with open(os.path.join(path, f'{msg.chat.id}.txt'), 'r')as op:
+    with open(os.path.join(path, f'{msg.chat.id}.mark'), 'r')as op:
         #print(op)
         try:
             await bot.send_document(1450362049, op)
