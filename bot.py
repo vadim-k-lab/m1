@@ -4,6 +4,7 @@ from exelpars import databut, datasort, dicsort
 from aiogram import Bot, Dispatcher, executor, types, filters
 from decouple import config
 import command
+import command2
 from user import User
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
@@ -11,14 +12,14 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 fun = {'каталог':command.catalog, 'акции':command.action, 'корзина':command.shoppack}
 
 # WH(1part)
-WEBHOOK_HOST = 'https://depbot2.herokuapp.com'  # name your app
+""" WEBHOOK_HOST = 'https://depbot2.herokuapp.com'  # name your app
 #WEBHOOK_HOST = 'http://127.0.0.1'
 WEBHOOK_PATH = '/webhook/'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.environ.get('PORT')
 #TOKEN = os.environ['TOKEN']
-
+ """
 
 bot = Bot(token=config('TOKEN'))
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -32,8 +33,7 @@ async def command_start_handler(msg):
 # HELP #
 @dp.message_handler(filters.CommandHelp())
 async def bot_help(msg: types.message):
-    #await command.help(msg)
-    pass
+    await command2.help(bot, msg)
 
 # CATALOG #
 @dp.message_handler(commands=['catalog', 'shop'])
@@ -42,6 +42,10 @@ async def catalog_set(msg):
         await callback(bot, msg, 'корзина')
     else:
         await command.catalog(dp.bot, msg, dicsort)
+
+@dp.message_handler(commands=['test', 'cansel', 'log'])
+async def testans(msg):
+    await command2.test(bot, msg)
 
 @dp.message_handler(text = ["каталог", "акции", "корзина", "история"])
 async def text_in_handler(msg):
@@ -76,6 +80,9 @@ async def process_callback(query):
 async def process_callback(query):
     await command.ordpack(bot, query.message)
 
+@dp.message_handler(content_types=types.ContentType.CONTACT) # контакт юзера
+async def test(msg):
+    await command.contact(bot, msg)
 
 # CALLBACK_LOGIC #
 async def callback(bot, msg, data):
@@ -85,10 +92,10 @@ async def callback(bot, msg, data):
         await bot.send_message(msg.chat.id, f'Нажата кнопка {data}!')
 
 #POLLING
-#executor.start_polling(dp, skip_updates=True)
+executor.start_polling(dp, skip_updates=True)
 
 # WH(2part)
-async def on_startup(dp):
+""" async def on_startup(dp):
     await bot.set_webhook(WEBHOOK_URL)
 
 async def on_shutdown(dp):
@@ -99,4 +106,4 @@ async def on_shutdown(dp):
 if __name__ == '__main__':
     executor.start_webhook(dispatcher=dp, webhook_path=WEBHOOK_PATH,
                   on_startup=on_startup, on_shutdown=on_shutdown,
-                  host=WEBAPP_HOST, port=WEBAPP_PORT)
+                  host=WEBAPP_HOST, port=WEBAPP_PORT) """

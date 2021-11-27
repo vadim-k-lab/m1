@@ -10,6 +10,7 @@ class User:
         except:
             self.bot = 'bot'
         self.name = msg.from_user.full_name
+        self.contact = ''
         self.vals = {k:{"экстра":0, "1й разбор":0, "2й разбор":0, "3й разбор":0, "детки":0} for k in ds} # values
         self.shop = {} # {name:{quality:value....}...}
         self.history = ''

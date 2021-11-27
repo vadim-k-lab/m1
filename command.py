@@ -19,7 +19,7 @@ def get_keyboard(board, n=2):
     return km(resize_keyboard=True, row_width=n).add(*but)
 # Генерация кнопок
 def get_btn(blist, n):
-    return rm(resize_keyboard=True, row_width=n).row(*[btn(i) for i in blist])
+    return rm(resize_keyboard=True, row_width=n).row(*[btn(i) for i in blist]).add(btn('Отправить свой контакт ☎️', request_contact=True))
 
 # START #
 async def startans(dp, msg):
@@ -119,7 +119,7 @@ async def calledit3(bot, query):
             u.shop[f][q] = u.shop[f].get(q, 0) + u.vals[f][q]
             u.vals[f][q] = 0
         except:pass
-        print(u.shop[f])
+        #print(u.shop[f])
         txt = '\n'.join([f, f'{q} = {fsort[f].dicprice[q]}грн/шт.'])
         board = [chengboard, 4]
         
@@ -190,12 +190,20 @@ async def ordpack(bot, msg, ds=None):
         os.makedirs(path)
 
     u = users[msg.chat.id] = users.get(msg.chat.id, User(msg, bot, fsort))
+    if not u.contact:
+        await msg.answer('добавте свой контакт')
+        return
+    #await msg.answer(f'ваш контакт : {u.contact}\nесли нет - добавте свой контакт')
 
     conv = {}
     for k, v in u.shop.items():
         for x, y in v.items():
             conv[x] = {**conv.get(x, {}), **{k:y}}
-
+    if not conv:
+        await bot.edit_message_text(chat_id=msg.chat.id,
+                        text='корзина пустая',
+                        message_id=msg.message_id)
+        return
     df = pd.DataFrame.from_dict(conv)
 
     """ with open(os.path.join(path, f'{msg.chat.id}.txt'), 'w', encoding='utf=8')as op:
@@ -203,10 +211,11 @@ async def ordpack(bot, msg, ds=None):
 
     with open(os.path.join(path, f'{msg.chat.id}.txt'), 'w', encoding='utf-8')as op:
         op.write(df.to_markdown())
+        op.write(f'\nномер заказчика : {u.contact}')
 
     """ with open(os.path.join(path, f'{msg.chat.id}.tab'), 'w')as op:
         op.write(tabulate.tabulate(df, headers='keys', tablefmt='psql')) """
-
+    
     # ОТПРАВЛЕНИЕ ЗАКАЗА
     with open(os.path.join(path, f'{msg.chat.id}.txt'), 'rb')as op:
         try:
@@ -225,3 +234,11 @@ async def ordpack(bot, msg, ds=None):
     for k in u.vals:
         for i in u.vals[k]:
             u.vals[k][i] = 0
+
+
+# CONTACT #
+async def contact(bot, msg):
+    u = users[msg.chat.id] = users.get(msg.chat.id, User(msg, bot, fsort))
+    u.contact = msg.contact.phone_number
+    if u.shop:
+        await ordpack(bot, msg)
