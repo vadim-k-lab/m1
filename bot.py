@@ -12,14 +12,14 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 fun = {'каталог':command.catalog, 'акции':command.action, 'корзина':command.shoppack}
 
 # WH(1part)
-""" WEBHOOK_HOST = 'https://depbot2.herokuapp.com'  # name your app
+WEBHOOK_HOST = 'https://depbot2.herokuapp.com'  # name your app
 #WEBHOOK_HOST = 'http://127.0.0.1'
 WEBHOOK_PATH = '/webhook/'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.environ.get('PORT')
 #TOKEN = os.environ['TOKEN']
- """
+
 
 bot = Bot(token=config('TOKEN'))
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -92,10 +92,10 @@ async def callback(bot, msg, data):
         await bot.send_message(msg.chat.id, f'Нажата кнопка {data}!')
 
 #POLLING
-executor.start_polling(dp, skip_updates=True)
+#executor.start_polling(dp, skip_updates=True)
 
 # WH(2part)
-""" async def on_startup(dp):
+async def on_startup(dp):
     await bot.set_webhook(WEBHOOK_URL)
 
 async def on_shutdown(dp):
@@ -106,4 +106,4 @@ async def on_shutdown(dp):
 if __name__ == '__main__':
     executor.start_webhook(dispatcher=dp, webhook_path=WEBHOOK_PATH,
                   on_startup=on_startup, on_shutdown=on_shutdown,
-                  host=WEBAPP_HOST, port=WEBAPP_PORT) """
+                  host=WEBAPP_HOST, port=WEBAPP_PORT)
